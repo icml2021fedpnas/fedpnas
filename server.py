@@ -1,6 +1,7 @@
 from utils import *
 from architecture import *
 
+
 # Implement FedPNAS server
 class Server:
     def __init__(self, architecture):

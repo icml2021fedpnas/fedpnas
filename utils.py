@@ -94,15 +94,15 @@ def plot_grad_flow(named_parameters):
     plt.show()
 
 
-
-
 def get_data_slice(torch_dataset, start, end):
     X = torch.stack([torch_dataset[i][0] for i in range(start, end)])
     Y = [torch_dataset[i][1] for i in range(start, end)]
     return X, Y
 
+
 def compute_accuracy(X, Y):
     return 1.0 * torch.sum(torch.eq(torch.argmax(X, dim=1), Y)) / X.shape[0]
+
 
 def main():
     degrees = [-30, -15, 0, 15, 30]
@@ -121,5 +121,19 @@ def main():
         plt.tight_layout()
     plt.savefig('./plot/example.png')
 
+
+def main2():
+    total_params = 0
+    for op_name, op in FULL_OPS.items():
+        print(op_name)
+        op_norm = op(C=16, stride=1, affine=True)
+        n_param_norm = 0
+        for p in op_norm.parameters():
+            n_param_norm += p.numel()
+        total_params += n_param_norm
+        print(n_param_norm)
+    print(total_params, total_params * 32)
+
+
 if __name__ == '__main__':
-    main()
+    main2()

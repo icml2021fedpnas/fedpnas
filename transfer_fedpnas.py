@@ -85,7 +85,7 @@ def main(config_name):
         Xs, Ys, Xt, Yt, classes = load_cifar_transfer(deg=config['rotation'])
     else:
         Xs, Ys, Xt, Yt, classes = load_mnist_transfer(deg=config['rotation'])
-    orig_channel, n_channel, n_ops, n_class = Xs.shape[1], config['n_channel'], len(list(SMALL_OPS.keys())), len(classes)
+    orig_channel, n_channel, n_ops, n_class = Xs.shape[1], config['n_channel'], len(list(FULL_OPS.keys())), len(classes)
     genotype = CellGenotype(n_hidden=config['n_hidden'], n_sink=config['n_sink'], max_skip=config['max_skip'])
 
     coordinator = TransferFedPNAS(
@@ -112,11 +112,8 @@ def create_config(config_name):
         'n_sink': 1,
         'max_skip': 3,
         'sampler_type': 'cell_based',
-        'save_folder': '/mnt/tnhoang-work/codes/fednas/model_chkpoint_mnist_transfer_std',
-        #'chkpoint': './model_chkpoint_meta_task_meta/fednas-2021-02-01-00-12-50-897735.pth',
-        #'chkpoint': './model_chkpoint_meta_task_std/fednas-2021-01-31-18-07-56-512826.pth',
-        'chkpoint': './model_chkpoint_meta_mnist_std/fednas-2021-02-01-02-56-44-538101.pth',
-        #'chkpoint': './model_chkpoint_meta_mnist_meta/fednas-2021-02-01-06-48-03-384470.pth',
+        'save_folder': '',
+        'chkpoint': '',
         'rotation': 90,
         'n_batch': 10,
         'n_epoch': 100,

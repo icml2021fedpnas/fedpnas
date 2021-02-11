@@ -77,8 +77,6 @@ class Client:
             # Compute standard loss
             self.finetune_opt.zero_grad()
             X_spec = self.architecture(X, n_sample, use_spec=True, use_aux=False)
-            #X_aux = self.architecture(X, n_sample, use_spec=False, use_aux=True)
-            #loss = self.loss(torch.log(X_spec), Y) + 0.5 * self.aux_loss(X_spec, X_aux)
             loss = self.loss(torch.log(X_spec), Y)
             loss.backward()
             self.finetune_opt.step()
@@ -129,7 +127,8 @@ class Client:
         # Compute standard loss
         self.base_opt.zero_grad()
         self.spec_opt.zero_grad()
-        loss = self.std_loss(X, Y, n_sample)
+        loss, aux_loss = self.std_loss(X, Y, n_sample, use_aux=True)
+        loss = loss + 0.5 * aux_loss
         loss.backward()
         if verbose:
             print(f'Standard Loss = {loss.item()}')

@@ -147,7 +147,7 @@ def create_config(config_name):
     torch.save({
         'dataset': 'cifar',
         'n_client': 5,
-        'save_folder': '/mnt/tnhoang-work/codes/fednas/model_chkpoint_fedavg_cifar_meta',
+        'save_folder': '',
         'fed_epoch': 1000,
         'n_batch': 10,
         'eval_interval': 5,
@@ -157,6 +157,6 @@ def create_config(config_name):
 
 
 if __name__ == '__main__':
-    config_name = './model_chkpoint_fedavg_cifar_meta/config_fedavg_cifar_meta.pth'
+    config_name = ''
     create_config(config_name)
     main(config_name)

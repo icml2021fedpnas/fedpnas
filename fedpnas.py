@@ -204,8 +204,8 @@ def main(config_name):
     if config['dataset'] == 'cifar':
         Xs, Ys, Xt, Yt, classes = load_cifar(n_client, meta_task=config['meta_task'])
     else:
-        Xs, Ys, Xt, Yt, classes = load_mnist(n_client, meta_task=config['meta_task'])
-    orig_channel, n_channel, n_ops, n_class = Xs[0].shape[1], config['n_channel'], len(list(SMALL_OPS.keys())), len(classes)
+        Xs, Ys, Xt, Yt, classes = load_mnist(n_client, meta_task=config['meta_task'], mode=config['meta_task_type'])
+    orig_channel, n_channel, n_ops, n_class = Xs[0].shape[1], config['n_channel'], len(list(FULL_OPS.keys())), len(classes)
     genotype = CellGenotype(n_hidden=config['n_hidden'], n_sink=config['n_sink'], max_skip=config['max_skip'])
 
     coordinator = FedPNAS(
@@ -250,25 +250,23 @@ def create_config(config_name):
         'n_sink': 1,
         'max_skip': 3,
         'sampler_type': 'cell_based',
-        'save_folder': '/mnt/tnhoang-work/codes/fednas/model_chkpoint_meta_mnist_std_finetune',
-        'warm_start_load': '/mnt/tnhoang-work/codes/fednas/model_chkpoint_meta_load/warm-start.pth',
+        'save_folder': '',
+        'warm_start_load': None,
         'warm_start_epoch': 100,
         'fed_epoch': 1000,
         'n_batch': 10,
         'n_sample': 5,
         'eval_interval': 5,
-        'device': 0,
+        'device': 1,
         'meta': True,
         'meta_task': True,
-        'finetune_config': {
-            'chkpoint': './model_chkpoint_meta_mnist_std/fednas-2021-02-01-02-56-44-538101.pth',
-            'n_epoch': 100
-        }
+        'meta_task_type': 'mixed',
+        'finetune_config': None
     }, config_name)
 
 
 if __name__ == '__main__':
-    config_name = './model_chkpoint_meta_mnist_std_finetune/config_meta_mnist_std_finetune.pth'
+    config_name = ''
     create_config(config_name)
     main(config_name)
 

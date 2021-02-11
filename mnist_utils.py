@@ -17,12 +17,29 @@ def load_mnist_transfer(deg=0):
     return Xs, torch.LongTensor(Ys), Xt, torch.LongTensor(Yt), classes
 
 
-def load_mnist_meta(n_client):
-    degrees = [-30, -15, 0, 15, 30]
-    spec_xform = [
-        transforms.RandomRotation(degrees=(d, d)) for d in degrees
-    ]
+def load_mnist_meta(n_client, mode='degree'):
     classes = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+    if mode == 'degree':
+        degrees = [-30, -15, 0, 15, 30]
+        spec_xform = [
+            transforms.RandomRotation(degrees=(d, d)) for d in degrees
+        ]
+        desc = [f'RandomRotation Deg={d}' for d in degrees]
+    else:
+        spec_xform = [
+            torchvision.transforms.ColorJitter(brightness=0, contrast=0, saturation=0, hue=(-0.5, -0.5)),
+            torchvision.transforms.ColorJitter(brightness=0, contrast=0, saturation=0, hue=(0.5, 0.5)),
+            transforms.RandomRotation(degrees=(0, 0)),
+            transforms.RandomRotation(degrees=(-90, -90)),
+            transforms.RandomRotation(degrees=(90, 90)),
+        ]
+        desc = [
+            'ColorJitter Hue=-0.5',
+            'ColorJitter Hue=0.5',
+            'RandomRotation Deg=0',
+            'RandomRotation Deg=-90',
+            'RandomRotation Deg=90',
+        ]
 
     Xs, Ys, Xt, Yt = [], [], [], []
     for i in range(n_client):
@@ -34,7 +51,7 @@ def load_mnist_meta(n_client):
         ])
         trainset = torchvision.datasets.MNIST(root=f'./data/client-{i+1}/', train=True, download=True, transform=transform)
         testset = torchvision.datasets.MNIST(root=f'./data/client-{i+1}/', train=False, download=True, transform=transform)
-        print(f'Data transformed for Client {i} ({degrees[i]} degree rotation)')
+        print(f'Data transformed for Client {i} ({desc[i]})')
         n_data = trainset.data.shape[0]
         n_test = testset.data.shape[0]
         Xi, Yi = get_data_slice(trainset, i * (n_data // n_client), (i + 1) * (n_data // n_client))
@@ -71,8 +88,8 @@ def load_mnist_std(n_client):
     return Xs, Ys, Xt, Yt, classes
 
 
-def load_mnist(n_client, meta_task=False):
+def load_mnist(n_client, meta_task=False, mode='mixed'):
     if meta_task:
-        return load_mnist_meta(n_client)
+        return load_mnist_meta(n_client, mode=mode)
     else:
         return load_mnist_std(n_client)
